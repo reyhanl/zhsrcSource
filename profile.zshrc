@@ -21,8 +21,15 @@ function rotN(){
     letter=$letters[$1]
     lowerCaseLetter=$( if $( isLowerCase $letter ); then; echo $letter; else; echo $( revertCase $letter ); fi)
     upperStr=$( if $( isLowerCase $letter ); then; echo $( revertCase $letter ); else; echo $letter; fi)
-    result=$(echo "$word" | tr 'a-zA-Z' "$lowerCaseLetter-za-$lowerCaseLetter$upperStr-ZA-$upperStr")
+    numbers="7-91-6"
+    result=$(echo "$word" | tr 'a-zA-Z1-9' "$lowerCaseLetter-za-$lowerCaseLetter$upperStr-ZA-$upperStr$numbers")
     echo $result
+}
+
+function scanPorts(){ //Overthewire
+    ports=$( nmap localhost -p 31000-32000 | cat | grep "open" | awk '{print $1}' | awk '{print $0+0}')
+
+    for port in $ports; do  cat pass.txt | openssl s_client -connect localhost:"$port"  2>/dev/null </dev/null | if grep -q "BEGIN"; then echo -n "JQttfApK4SeyHwDlI9SXGR50qclOAil1" | nc localhost "$port"; else echo -n "JQttfApK4SeyHwDlI9SXGR50qclOAil1" | nc -N localhost "$port" ; fi; done
 }
 
 function rotIncrement(){
